@@ -11,11 +11,16 @@ use opengl_graphics::*;
 use opengl_graphics::GlyphCache;
 use glutin_window::GlutinWindow as Window;
 
+mod renderer;
+
+use renderer::FpsCounter;
+use renderer::Renderer;
+
 fn main() {
     let opengl = OpenGL::V3_2;
     let mut window: Window = WindowSettings::new(
             "vrind-scroll",
-            [200, 200]
+            [1600, 900]
         )
         .graphics_api(opengl)
         .exit_on_esc(true)
@@ -26,6 +31,8 @@ fn main() {
     let mut glyphs = GlyphCache::new("assets/fonts/big_shoulders/BigShouldersDisplay-Thin.ttf", (), TextureSettings::new()).unwrap();
     let mut gl = GlGraphics::new(opengl);
     let mut events = Events::new(EventSettings::new());
+
+    let mut fps_counter = FpsCounter::new();
     while let Some(e) = events.next(&mut window) {
         use graphics::*;
 
@@ -36,6 +43,8 @@ fn main() {
                 clear([0.0, 0.0, 0.0, 1.0], g);
                 text::Text::new_color([0.0, 1.0, 0.0, 1.0], 32)
                     .draw("Hello world!", &mut glyphs, &c.draw_state, transform, g).unwrap();
+
+                fps_counter.render(&c, g, &mut glyphs);
             });
         }
     }
