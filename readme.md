@@ -14,4 +14,5 @@ Execute the following command in the root directory:
 ### Web
 Execute the following command in the root directory:
 > cargo web start
+
 Go to http://localhost:8000
