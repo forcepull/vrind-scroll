@@ -1,50 +1,39 @@
-use std::time::{Duration, Instant};
-use graphics::Graphics;
-use graphics::Context;
-use graphics::text::Text;
-use graphics::character::CharacterCache;
-
-use graphics::Transformed;
+use quicksilver::{
+    Result,
+    geom::{Transform},
+    graphics::{Background::Img, Font, FontStyle, Color},
+    lifecycle::{Asset, Window}
+};
 
 use super::Renderer;
 
-pub struct FpsCounter {
-    last: Instant,
-    last_fps: u32,
-    framecounter: u32,
-}
+pub struct FpsCounter {}
 
 impl FpsCounter {
     pub fn new() -> Self {
-        FpsCounter {
-            last: Instant::now(),
-            last_fps: 0,
-            framecounter: 0,
-        }
+        FpsCounter {}
     }
 }
 
-impl<G,C> Renderer<G, C> for FpsCounter
-where 
-    C: CharacterCache,
-    G: Graphics<Texture = <C as CharacterCache>::Texture> {
-    fn render(&mut self, c: &Context, g: &mut G, glyphs: &mut C)
+impl Renderer for FpsCounter {
+    fn render(&mut self, window: &mut Window, font: &mut Asset<Font>) -> Result<()>
     {
-        let elapsed = self.last.elapsed();
+        font.execute(|font| {
+            let text = format!("{:.0} FPS", window.current_fps());
 
-        if elapsed.as_micros() > 100000
-        {
-            self.last = Instant::now();
-            self.last_fps = self.framecounter * 10;
-            self.framecounter = 0;
-        }
-        
-        self.framecounter += 1;
-        
-        let transform = c.transform.trans(1520.0, 870.0);
+            let style = FontStyle::new(32.0, Color::RED);
+            let text_image = font.render(&text, &style)?;
+            
+            let rectangle = text_image.area();
+            let screen_size = window.screen_size();
+            let transform = Transform::translate((
+                screen_size.x - rectangle.width() - 5.0,
+                screen_size.y - rectangle.height() - 5.0,
+            ));
+            
+            window.draw_ex(&rectangle, Img(&text_image), transform, 1);
 
-        let text = format!("{} FPS", self.last_fps);
-
-        Text::new_color([0.0, 1.0, 0.0, 1.0], 32).draw(&text, glyphs, &c.draw_state, transform, g).ok();
+            Ok(())
+        })
     }
 }

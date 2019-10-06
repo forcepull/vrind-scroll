@@ -1,10 +1,9 @@
-use graphics::Graphics;
-use graphics::Context;
-use graphics::character::CharacterCache;
+use quicksilver::{
+    Result,
+    graphics::Font,
+    lifecycle::{Asset, Window}
+};
 
-pub trait Renderer<G, C> 
-where 
-    C: CharacterCache,
-    G: Graphics<Texture = <C as CharacterCache>::Texture> {
-    fn render(&mut self, c: &Context, g: &mut G, c: &mut C);
+pub trait Renderer {
+    fn render(&mut self, window: &mut Window, font: &mut Asset<Font>) -> Result<()>;
 }
