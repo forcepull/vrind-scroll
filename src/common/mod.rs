@@ -14,4 +14,9 @@ impl Pos {
     pub fn to_tuple(&self) -> (f32, f32) {
         (self.x, self.y)
     }
+
+    pub fn add(&mut self, x: f32, y: f32) {
+        self.x += x;
+        self.y += y;
+    }
 }

@@ -11,9 +11,12 @@ use quicksilver::{
 
 pub mod common;
 pub mod entities;
+mod input;
 mod renderer;
 
 use entities::Player;
+
+use input::player_controller;
 
 use renderer::FpsCounter;
 use renderer::Renderer;
@@ -35,6 +38,12 @@ impl State for GameState {
             player: Player::new(),
             font: font,
         })
+    }
+
+    fn update(&mut self, window: &mut Window) -> Result<()> {
+        player_controller::update(&mut self.player, window)?;
+
+        Ok(())
     }
 
     fn draw(&mut self, window: &mut Window) -> Result<()> {
