@@ -9,13 +9,18 @@ use quicksilver::{
     prelude::Future,
 };
 
+pub mod common;
+pub mod entities;
 mod renderer;
+
+use entities::Player;
 
 use renderer::FpsCounter;
 use renderer::Renderer;
 
 struct GameState {
     fps_counter: FpsCounter,
+    player: Player,
     font: Asset<Font>,
 }
 
@@ -27,6 +32,7 @@ impl State for GameState {
 
         Ok(GameState {
             fps_counter: FpsCounter::new(),
+            player: Player::new(),
             font: font,
         })
     }
@@ -34,6 +40,7 @@ impl State for GameState {
     fn draw(&mut self, window: &mut Window) -> Result<()> {
         window.clear(Color::BLACK)?;
         self.fps_counter.render(window, &mut self.font)?;
+        self.player.render(window, &mut self.font)?;
         Ok(())
     }
 }
