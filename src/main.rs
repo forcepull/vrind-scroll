@@ -11,6 +11,7 @@ use quicksilver::{
 
 pub mod common;
 pub mod entities;
+pub mod terrain;
 mod input;
 mod renderer;
 
@@ -18,12 +19,17 @@ use entities::Player;
 
 use input::player_controller;
 
+use terrain::{Terrain, terrain_hills};
+
 use renderer::FpsCounter;
 use renderer::Renderer;
+use renderer::TerrainRenderer;
 
 struct GameState {
     fps_counter: FpsCounter,
     player: Player,
+    terrain: Terrain,
+    terrain_renderer: TerrainRenderer,
     font: Asset<Font>,
 }
 
@@ -33,9 +39,14 @@ impl State for GameState {
             result(Ok(font))
         }));
 
+        let mut terrain = Terrain::new();
+        terrain_hills(&mut terrain);
+
         Ok(GameState {
             fps_counter: FpsCounter::new(),
             player: Player::new(),
+            terrain: terrain,
+            terrain_renderer: TerrainRenderer::new()?,
             font: font,
         })
     }
@@ -47,9 +58,12 @@ impl State for GameState {
     }
 
     fn draw(&mut self, window: &mut Window) -> Result<()> {
+        self.terrain_renderer.update_render(window, &self.terrain)?;
+
         window.clear(Color::BLACK)?;
         self.fps_counter.render(window, &mut self.font)?;
         self.player.render(window, &mut self.font)?;
+        self.terrain_renderer.render(window, &mut self.font)?;
         Ok(())
     }
 }
