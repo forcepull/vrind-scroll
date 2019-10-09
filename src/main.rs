@@ -24,10 +24,12 @@ use terrain::{Terrain, terrain_hills};
 use renderer::FpsCounter;
 use renderer::Renderer;
 use renderer::TerrainRenderer;
+use renderer::PlayerCamera;
 
 struct GameState {
     fps_counter: FpsCounter,
     player: Player,
+    player_camera: PlayerCamera,
     terrain: Terrain,
     terrain_renderer: TerrainRenderer,
     font: Asset<Font>,
@@ -45,6 +47,7 @@ impl State for GameState {
         Ok(GameState {
             fps_counter: FpsCounter::new(),
             player: Player::new(),
+            player_camera: PlayerCamera::new(),
             terrain: terrain,
             terrain_renderer: TerrainRenderer::new()?,
             font: font,
@@ -53,6 +56,8 @@ impl State for GameState {
 
     fn update(&mut self, window: &mut Window) -> Result<()> {
         player_controller::update(&mut self.player, window)?;
+
+        self.player_camera.update(window, &self.player)?;
 
         Ok(())
     }
