@@ -15,7 +15,7 @@ impl Renderer for Player {
 
         let transform = Transform::translate((
             pos_x,
-            pos_y,
+            -pos_y,
         ));
         
         window.draw_ex(&player_rectangle, Color::WHITE, transform, 1);
