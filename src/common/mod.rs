@@ -19,4 +19,9 @@ impl Pos {
         self.x += x;
         self.y += y;
     }
+
+    pub fn set(&mut self, x: f32, y: f32) {
+        self.x = x;
+        self.y = y;
+    }
 }

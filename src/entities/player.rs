@@ -15,6 +15,10 @@ impl Player {
         self.pos.to_tuple()
     }
 
+    pub fn set_pos(&mut self, x: f32, y: f32) {
+        self.pos.set(x,y);
+    }
+
     pub fn move_player(&mut self, x: f32, y: f32) {
         self.pos.add(x, y);
     }
